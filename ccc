@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+import re
+import io
+import sys
+import zipfile
+from bs4 import BeautifulSoup
+from os.path import exists
+
+input_file = sys.argv[1]
+
+
+def count_chinese_characters_in_chapter(epub):
+    with zipfile.ZipFile(epub, mode="r") as archive:
+        for name in archive.namelist():
+            if name.endswith(".ncx"):
+                with io.TextIOWrapper(archive.open(name), encoding="utf-8") as f:
+                    toc = f.read()
+                    # print(toc)
+                    soup = BeautifulSoup (toc)
+                    chapters = soup.find_all("navpoint")
+                    for chapter in chapters:
+                        title = chapter.text
+                        src = chapter.content['src']
+                        if src.endswith("html"):
+                            print("** " + title)
+                            with io.TextIOWrapper(archive.open(src), encoding="utf-8") as f:
+
+                                # Remove the title tag from the file
+                                title = r'<title>.*<\/title>'
+                                modif_hanzi = re.sub(title, '', f.read())
+                                # Return only chinese characters
+                                hanzi_regex = re.compile(r'[\u4E00-\u9FA5]')
+                                hanzi_list = hanzi_regex.findall(modif_hanzi)
+
+                                print(":PROPERTIES:")
+                                print(":characters: " + str(len(hanzi_list)))
+                                print(":END:")
+
+def check_if_epub(input_file):
+    if input_file.endswith(".epub") and exists(input_file):
+        return True
+    else:
+        print(input_file + " is not an epub file.")
+
+if check_if_epub(input_file):
+    count_chinese_characters_in_chapter(input_file)
+

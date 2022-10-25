@@ -105,5 +105,5 @@ for entry in details:
     # TODO change y value
     plt.text(entry[2], 305, entry[0])
 
-plt.plot(x,y)
+plt.scatter(x,y)
 plt.show()
