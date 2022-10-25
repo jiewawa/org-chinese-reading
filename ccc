@@ -8,6 +8,18 @@ from os.path import exists
 
 input_file = sys.argv[1]
 
+def print_title(soup):
+    if soup.find("doctitle"):
+        book_title = soup.find("doctitle").text
+    elif soup.find("docTitle"):
+        book_title = soup.find("docTitle").text
+    print("* " + book_title.replace("\n", ""))
+
+def output_as_org(hanzi_list):
+    print(":PROPERTIES:")
+    print(":characters: " + str(len(hanzi_list)))
+    print(":END:")
+
 
 def count_chinese_characters_in_chapter(epub):
     with zipfile.ZipFile(epub, mode="r") as archive:
@@ -15,8 +27,10 @@ def count_chinese_characters_in_chapter(epub):
             if name.endswith(".ncx"):
                 with io.TextIOWrapper(archive.open(name), encoding="utf-8") as f:
                     toc = f.read()
-                    # print(toc)
                     soup = BeautifulSoup (toc)
+
+                    print_title(soup)
+
                     chapters = soup.find_all("navpoint")
                     for chapter in chapters:
                         title = chapter.text
@@ -32,9 +46,8 @@ def count_chinese_characters_in_chapter(epub):
                                 hanzi_regex = re.compile(r'[\u4E00-\u9FA5]')
                                 hanzi_list = hanzi_regex.findall(modif_hanzi)
 
-                                print(":PROPERTIES:")
-                                print(":characters: " + str(len(hanzi_list)))
-                                print(":END:")
+                                output_as_org(hanzi_list)
+
 
 def check_if_epub(input_file):
     if input_file.endswith(".epub") and exists(input_file):
