@@ -48,7 +48,7 @@ for book in reversed(root.children[0:]):
 n = 0
 for i in my_list:
     n += i[2]
-print(n)
+print("今年年总字数: " + str(n))
 
 # reading time total
 m = 0
@@ -60,50 +60,54 @@ h = int(h / 60)
 d = h - (h % 24)
 h = h - d
 d = int(d / 24)
-print(str(d) + " days, " + str(h) + " hours, and " + str(m) + " minutes.")
+print("阅读时间: " + str(d) + "天" + str(h) + "小时" + str(m) + "分钟")
 
-# The following is used for determining where each book begins and ends
-char_count = 0
-titles = []
-final_chapters = []
-titles.append(my_list[0][0])
+# total average
+t = (24 * 60 * d) + (60 * h) + m
+print("平均阅读速度：" + str(round(n / t)) + " cpm")
 
-for item in my_list:
-    if item[0] in titles:
-        char_count += item[2]
-    else:
-        final_chapters.append(char_count)
-        char_count += item[2]
-        titles.append(item[0])
+# # The following is used for determining where each book begins and ends
+# char_count = 0
+# titles = []
+# final_chapters = []
+# titles.append(my_list[0][0])
 
-
-# Determine the midpoint of each book
-midpoints = []
-x0 = 0
-for item in final_chapters:
-    x1 = item
-    midpoint = (x1 - x0) / 2
-    midpoint = midpoint + x0
-    midpoints.append(midpoint)
-    x0 = x1
-
-# combine title, final chapter and midpoint lists together
-details = list(zip(titles, final_chapters, midpoints)) 
+# for item in my_list:
+#     if item[0] in titles:
+#         char_count += item[2]
+#     else:
+#         final_chapters.append(char_count)
+#         char_count += item[2]
+#         titles.append(item[0])
 
 
-# graph
-x_entry = 0
-x = []
-y = []
-for entry in my_list:
-    x_entry += entry[2]
-    x.append(x_entry)
-    y.append(int(entry[2] / entry[3]))
+# # Determine the midpoint of each book
+# midpoints = []
+# x0 = 0
+# for item in final_chapters:
+#     x1 = item
+#     midpoint = (x1 - x0) / 2
+#     midpoint = midpoint + x0
+#     midpoints.append(midpoint)
+#     x0 = x1
 
-for entry in details:
-    plt.axvline(x=entry[1], color='red', linestyle='--')
-    # TODO change y value
-    plt.text(entry[2], 305, entry[0])
+# # combine title, final chapter and midpoint lists together
+# details = list(zip(titles, final_chapters, midpoints)) 
 
-plt.scatter(x,y)
-plt.show()
+
+# # graph
+# x_entry = 0
+# x = []
+# y = []
+# for entry in my_list:
+#     x_entry += entry[2]
+#     x.append(x_entry)
+#     y.append(int(entry[2] / entry[3]))
+
+# for entry in details:
+#     plt.axvline(x=entry[1], color='red', linestyle='--')
+#     # TODO change y value
+#     plt.text(entry[2], 305, entry[0])
+
+# plt.scatter(x,y)
+# plt.show()

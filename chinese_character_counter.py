@@ -47,7 +47,7 @@ def count_chinese_characters_in_chapter(epub):
             if name.endswith(".ncx"):
                 with io.TextIOWrapper(archive.open(name), encoding="utf-8") as f:
                     toc = f.read()
-                    soup = BeautifulSoup (toc)
+                    soup = BeautifulSoup (toc, features="lxml")
 
                     print_book_title(soup)
                     print_chapter_details(soup, archive)
